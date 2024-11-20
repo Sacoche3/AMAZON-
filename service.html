@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Client</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #FFE5E5 0%, #FFF4E5 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, #FFB6C1, #FFA07A);
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+
+        h1 {
+            color: #FF6B6B;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.8em;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 2px solid transparent;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border: 2px solid #FFB6C1;
+            box-shadow: 0 15px 30px rgba(255,182,193,0.2);
+        }
+
+        .service-card i {
+            font-size: 45px;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #FF6B6B, #FFB6C1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .service-card h3 {
+            color: #444;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .service-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .contact-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .contact-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 18px 35px;
+            border-radius: 50px;
+            border: none;
+            color: white;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+        }
+
+        .contact-btn:hover::before {
+            transform: translateX(0);
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .whatsapp {
+            background: linear-gradient(45deg, #25D366, #128C7E);
+        }
+
+        .telegram {
+            background: linear-gradient(45deg, #0088cc, #0055a5);
+        }
+
+        .contact-btn i {
+            font-size: 26px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 2.2em;
+            }
+
+            .contact-btn {
+                padding: 15px 25px;
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✨ Service Client ✨</h1>
+        
+        <div class="services">
+            <div class="service-card">
+                <i class="fas fa-clock"></i>
+                <h3>Disponible 8H00 A 19H00</h3>
+                <p>Notre équipe est là pour vous accompagner à chaque instant de votre journée !</p>
+            </div>
+            
+            <div class="service-card">
+                <i class="fas fa-comments"></i>
+                <h3>Support Rapide</h3>
+                <p>Une réponse garantie en moins de 30 minutes pour votre satisfaction !</p>
+            </div>
+            
+            <div class="service-card">
+                <i class="fas fa-heart"></i>
+                <h3>Service Personnalisé</h3>
+                <p>Des solutions sur mesure pour répondre parfaitement à vos attentes !</p>
+            </div>
+        </div>
+
+        <div class="contact-buttons">
+            <a href="https://wa.me/message/IOWV6BC7BCEIO1" target="_blank" class="contact-btn whatsapp">
+                <i class="fab fa-whatsapp"></i>
+                Service client 
+            </a>
+            <a href="https://chat.whatsapp.com/BeBIpqO3Ip8GbBlSFcsxmG" target="_blank" class="contact-btn whatsapp">
+                <i class="fab fa-whatsapp"></i>
+                Groupe WhatsApp 
+            </a>
+            
+            <a href="https://t.me/livraisongratuiteen" target="_blank" class="contact-btn telegram">
+                <i class="fab fa-telegram"></i>
+                Groupe Télégramme 
+            </a>
+        </div>
+    </div>
+</body>
+</html>

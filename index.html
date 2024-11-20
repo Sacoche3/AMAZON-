@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="google-site-verification" content="XUVmGoIjqlJTmcx80iUEyo7zgYWVigIcdr0jinhIvwk" /> 
+    <title>REGISTER AMAZON </title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #1a1a2e);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70%;
+            z-index: 0;
+            background: linear-gradient(45deg, #ff3366, #2563eb, #00ff87);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            opacity: 0.1;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .rotating-section {
+            position: fixed;
+            width: 800px;
+            height: 800px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+        }
+
+        .rotating-circle {
+            position: absolute;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: rotate 20s linear infinite;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .circle1 { width: 100%; height: 100%; animation-duration: 30s; }
+        .circle2 { width: 80%; height: 80%; animation-duration: 25s; }
+        .circle3 { width: 60%; height: 60%; animation-duration: 20s; }
+
+        @keyframes rotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 48px;
+            width: 100%;
+            max-width: 480px;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shine 2s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 32px;
+            font-size: 2.2em;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 36px;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .tab-button {
+            padding: 12px 24px;
+            border: none;
+            background: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 15px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-button.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-button:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .form-container {
+            position: relative;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+            position: absolute;
+            width: 100%;
+            pointer-events: none;
+        }
+
+        form.active {
+            opacity: 1;
+            transform: translateY(0);
+            position: relative;
+            pointer-events: all;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 16px;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px 16px 16px 48px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            position: relative;
+        }
+
+        .input-group input:focus {
+            border-color: #2563eb;
+            background: rgba(255, 255, 255, 0.15);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
+        }
+
+        .input-group input:focus + i {
+            color: #2563eb;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        button[type="submit"] {
+            background: linear-gradient(45deg, #2563eb, #1d4ed8);
+            color: white;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        button[type="submit"]::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 59%;
+            height: 20%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        button[type="submit"]:hover::before {
+            left: 100%;
+        }
+
+        .error-message {
+            color: #ff4444;
+            font-size: 14px;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .success-message {
+            color: #00ff87;
+            font-size: 14px;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .loading {
+            position: relative;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(4px);
+            border-radius: 12px;
+        }
+
+        .loading::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 24px;
+            height: 24px;
+            margin: -12px 0 0 -12px;
+            border: 3px solid #2563eb;
+            border-top-color: transparent;
+            border-radius: 50%;
+            z-index: 1;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 32px 24px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .logo-container img {
+                max-width: 120px;
+            }
+
+            .rotating-section {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation"></div>
+
+    <div class="rotating-section">
+        <div class="rotating-circle circle1"></div>
+        <div class="rotating-circle circle2"></div>
+        <div class="rotating-circle circle3"></div>
+    </div>
+
+    <div class="container">
+        
+        
+        
+        
+        <div class="tab-buttons">
+            <button class="tab-button active" onclick="showLogin()">Connexion</button>
+            <button class="tab-button" onclick="showSignup()">Inscription</button>
+        </div>
+
+        <div class="form-container">
+            <form id="loginFormData" class="active">
+                <div class="input-group">
+                    <input type="email" id="loginEmail" placeholder="Adresse email" required />
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="loginPassword" placeholder="Mot de passe" required />
+                    <i class="fas fa-lock"></i>
+                </div>
+                <p class="error-message" id="loginError"></p>
+                <button type="submit">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Se connecter
+                </button>
+            </form>
+
+            <form id="signupFormData">
+                <div class="input-group">
+                    <input type="text" id="signupUsername" placeholder="Nom d'utilisateur" required />
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="input-group">
+                    <input type="email" id="signupEmail" placeholder="Adresse email" required />
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="signupPassword" placeholder="Mot de passe" required />
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="confirmPassword" placeholder="Confirmer le mot de passe" required />
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="referralCode" placeholder="Code de parrainage (optionnel)" />
+                    <i class="fas fa-ticket"></i>
+                </div>
+                <p class="error-message" id="signupError"></p>
+                <p class="success-message" id="signupSuccess"></p>
+                <button type="submit">
+                    <i class="fas fa-user-plus"></i>
+                    Créer un compte
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+        import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBjNLOXq8Xh3dRMJaE6eOHuqq0IXjn413U",
+            authDomain: "trading-86409.firebaseapp.com",
+            databaseURL: "https://trading-86409-default-rtdb.firebaseio.com",
+            projectId: "trading-86409",
+            storageBucket: "trading-86409.firebasestorage.app",
+            messagingSenderId: "886645969622",
+            appId: "1:886645969622:web:e3be0c80f5ee1e7ff82f77"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+        const database = getDatabase(app);
+
+        function generateReferralCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            return Array.from({length: 6}, () => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
+        }
+
+        async function checkReferralCode(code) {
+            if (!code) return null;
+            try {
+                const snapshot = await get(ref(database, 'referralCodes/' + code));
+                return snapshot.exists() ? snapshot.val() : null;
+            } catch (error) {
+                console.error("Erreur de vérification du code:", error);
+                return null;
+            }
+        }
+
+        async function registerReferralCode(userId, code) {
+            try {
+                await set(ref(database, 'referralCodes/' + code), {
+                    userId,
+                    createdAt: Date.now()
+                });
+                return true;
+            } catch (error) {
+                console.error("Erreur d'enregistrement du code:", error);
+                return false;
+            }
+        }
+
+        async function updateUserBalance(userId, amount) {
+            try {
+                const userRef = ref(database, 'users/' + userId);
+                const snapshot = await get(userRef);
+                if (snapshot.exists()) {
+                    const currentBalance = snapshot.val().balance || 0;
+                    await set(ref(database, 'users/' + userId + '/balance'), currentBalance + amount);
+                }
+            } catch (error) {
+                console.error("Erreur de mise à jour du solde:", error);
+            }
+        }
+
+        window.showLogin = function() {
+            document.getElementById("loginFormData").classList.add("active");
+            document.getElementById("signupFormData").classList.remove("active");
+            document.querySelectorAll(".tab-button").forEach((btn, index) => {
+                btn.classList.toggle("active", index === 0);
+            });
+        }
+
+        window.showSignup = function() {
+            document.getElementById("signupFormData").classList.add("active");
+            document.getElementById("loginFormData").classList.remove("active");
+            document.querySelectorAll(".tab-button").forEach((btn, index) => {
+                btn.classList.toggle("active", index === 1);
+            });
+        }
+
+        function setLoading(form, isLoading) {
+            form.classList.toggle('loading', isLoading);
+        }
+
+        document.getElementById("signupFormData").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            setLoading(this, true);
+            const errorElement = document.getElementById("signupError");
+            const successElement = document.getElementById("signupSuccess");
+            errorElement.innerText = "";
+            successElement.innerText = "";
+
+            try {
+                const username = document.getElementById("signupUsername").value;
+                const email = document.getElementById("signupEmail").value;
+                const password = document.getElementById("signupPassword").value;
+                const confirmPassword = document.getElementById("confirmPassword").value;
+                const referralCode = document.getElementById("referralCode").value;
+
+                if (password !== confirmPassword) {
+                    throw new Error("Les mots de passe ne correspondent pas");
+                }
+
+                let referrerData = null;
+                if (referralCode) {
+                    referrerData = await checkReferralCode(referralCode);
+                    if (!referrerData) {
+                        throw new Error("Code de parrainage invalide");
+                    }
+                }
+
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                const newReferralCode = generateReferralCode();
+                
+                await set(ref(database, 'users/' + user.uid), {
+                    username,
+                    email,
+                    balance: 0,
+                    referralCode: newReferralCode,
+                    referredBy: referrerData?.userId || null,
+                    createdAt: Date.now()
+                });
+
+                await registerReferralCode(user.uid, newReferralCode);
+
+                if (referrerData) {
+                    await updateUserBalance(referrerData.userId, 0);
+                    await updateUserBalance(user.uid, 0);
+                    successElement.innerText = "Compte créé avec succès !";
+                }
+
+                setTimeout(() => {
+                    window.location.href = "solde.html";
+                }, 1500);
+
+            } catch (error) {
+                errorElement.innerText = error.message;
+            } finally {
+                setLoading(this, false);
+            }
+        });
+
+        document.getElementById("loginFormData").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            setLoading(this, true);
+
+            try {
+                const email = document.getElementById("loginEmail").value;
+                const password = document.getElementById("loginPassword").value;
+
+                await signInWithEmailAndPassword(auth, email, password);
+                window.location.href = "solde.html";
+            } catch (error) {
+                document.getElementById("loginError").innerText = "Email ou mot de passe incorrect";
+            } finally {
+                setLoading(this, false);
+            }
+        });
+
+       // Récupérer le lien de parrainage à partir de l'URL
+const urlParams = new URLSearchParams(window.location.search);
+const referralCode = urlParams.get('ref');
+
+// Trouver le champ du code de parrainage dans le formulaire d'inscription
+const referralCodeInput = document.getElementById('referralCode');
+
+// Insérer automatiquement le code de parrainage dans le champ correspondant
+if (referralCodeInput && referralCode) {
+  referralCodeInput.value = referralCode;
+} 
+    </script>
+</body>
+</html>
