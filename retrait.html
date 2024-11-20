@@ -263,12 +263,12 @@
 
             <div class="limits-info">
                 <i class="fas fa-exclamation-circle"></i>
-                <span>Limites de retrait : Minimum 1 000 FCFA - Maximum 800 000 FCFA</span>
+                <span>Limites de retrait : Minimum 3 500 FCFA - Maximum 1 000 000 000 FCFA</span>
             </div>
 
             <div class="form-group">
                 <label for="amount">Montant à retirer:</label>
-                <input type="number" id="amount" min="1000" max="800000" required placeholder="Entrez le montant">
+                <input type="number" id="amount" min="3000" max="800000" required placeholder="Entrez le montant">
             </div>
 
             <div id="withdrawal-summary">
@@ -318,7 +318,7 @@
         const auth = getAuth();
 
         // Constantes pour les limites de retrait
-        const MIN_WITHDRAWAL = 1000;
+        const MIN_WITHDRAWAL = 3500;
         const MAX_WITHDRAWAL = 800000;
 
         // Fonction pour formater les montants
