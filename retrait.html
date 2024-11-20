@@ -258,17 +258,17 @@
         <div id="withdrawal-form">
             <div class="fees-info">
                 <i class="fas fa-info-circle"></i>
-                <span>Des frais de retrait de 13% seront appliqués à votre transaction</span>
+                <span>Des frais de retrait de 10% seront appliqués à votre transaction</span>
             </div>
 
             <div class="limits-info">
                 <i class="fas fa-exclamation-circle"></i>
-                <span>Limites de retrait : Minimum 550 FCFA - Maximum 800 000 FCFA</span>
+                <span>Limites de retrait : Minimum 1 000 FCFA - Maximum 800 000 FCFA</span>
             </div>
 
             <div class="form-group">
                 <label for="amount">Montant à retirer:</label>
-                <input type="number" id="amount" min="550" max="800000" required placeholder="Entrez le montant">
+                <input type="number" id="amount" min="1000" max="800000" required placeholder="Entrez le montant">
             </div>
 
             <div id="withdrawal-summary">
@@ -318,7 +318,7 @@
         const auth = getAuth();
 
         // Constantes pour les limites de retrait
-        const MIN_WITHDRAWAL = 550;
+        const MIN_WITHDRAWAL = 1000;
         const MAX_WITHDRAWAL = 800000;
 
         // Fonction pour formater les montants
