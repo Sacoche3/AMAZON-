@@ -204,7 +204,7 @@
             
             if (teamMembers.length > 0) {
                 const totalTeamBalance = teamMembers.reduce((sum, member) => sum + (member.balance || 0), 0);
-                const totalBonus = totalTeamBalance * 0.05;
+                const totalBonus = totalTeamBalance * 0.10;
 
                 document.getElementById('teamCount').textContent = teamMembers.length;
                 document.getElementById('totalBonus').textContent = formatFCFA(totalBonus);
