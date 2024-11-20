@@ -88,13 +88,13 @@
 </head>
 <body class="gradient-bg min-h-screen flex items-center justify-center">
     <button class="absolute top-4 right-4 bg-white text-purple-500 px-4 py-2 rounded-full shadow-md hover:bg-purple-500 hover:text-white transition-colors" onclick="logout()">Déconnexion</button>
-    <div id="successMessage" class="fixed top-4 left-1/2 transform -translate-x-1/2 success-message hidden animate-fade-in">Copié avec succès!</div>
+    <div id="successMessage" class="fixed top-4 left-1/2 transform -translate-x-1/2 success-message hidden">Copié avec succès!</div>
     
     <div class="card w-full max-w-4xl p-8">
-        <h1 class="text-2xl font-bold text-center mb-8 text-white">Mon Équipe</h1>
+        <h1 class="text-2xl font-bold text-gray-800 text-center mb-8">Mon Équipe</h1>
 
         <div class="mb-8">
-            <h2 class="text-lg font-bold mb-4 text-white">Liens de Parrainage</h2>
+            <h2 class="text-lg font-bold mb-4 text-gray-700">Liens de Parrainage</h2>
             <div class="grid grid-cols-1 gap-4">
                 <div class="bg-gray-100 rounded-md p-4 flex justify-between items-center">
                     <div class="flex items-center gap-2">
@@ -137,184 +137,198 @@
         </div>
     </div>
 
-       <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-    import { getDatabase, ref, onValue, query, orderByChild, equalTo, update, get } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+        import { getDatabase, ref, onValue, get, update, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
-    // Configuration Firebase
-    const firebaseConfig = {
-        apiKey: "AIzaSyBjNLOXq8Xh3dRMJaE6eOHuqq0IXjn413U",
-        authDomain: "trading-86409.firebaseapp.com",
-        databaseURL: "https://trading-86409-default-rtdb.firebaseio.com",
-        projectId: "trading-86409",
-        storageBucket: "trading-86409.appspot.com",
-        messagingSenderId: "886645969622",
-        appId: "1:886645969622:web:e3be0c80f5ee1e7ff82f77"
-    };
+        // Configuration Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBjNLOXq8Xh3dRMJaE6eOHuqq0IXjn413U",
+            authDomain: "trading-86409.firebaseapp.com",
+            databaseURL: "https://trading-86409-default-rtdb.firebaseio.com",
+            projectId: "trading-86409",
+            storageBucket: "trading-86409.appspot.com",
+            messagingSenderId: "886645969622",
+            appId: "1:886645969622:web:e3be0c80f5ee1e7ff82f77"
+        };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth();
-    const database = getDatabase(app);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+        const database = getDatabase();
 
-    // Fonction pour formater le montant en FCFA
-    function formatFCFA(amount) {
-        return amount.toLocaleString('fr-FR', {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        }) + ' FCFA';
-    }
-
-    // Fonction pour créditer un bonus de 10 % en FCFA
-    async function creditBonus(userId, totalTeamBalance) {
-        try {
-            const userRef = ref(database, `users/${userId}`);
-            const snapshot = await get(userRef);
-            const userData = snapshot.val();
-            
-            if (userData.bonusCredited) {
-                console.log(`Le bonus de 10 % a déjà été crédité pour l'utilisateur ${userId}.`);
-                return;
-            }
-
-            const currentBalance = userData.balance || 0;
-            const bonusAmount = totalTeamBalance * 0.10;
-            const newBalance = currentBalance + bonusAmount;
-
-            await update(userRef, {
-                balance: newBalance,
-                bonusCredited: true,
-                lastBonusUpdate: Date.now()
-            });
-
-            console.log(`Bonus de ${formatFCFA(bonusAmount)} crédité pour ${userId}`);
-        } catch (error) {
-            console.error("Erreur lors du crédit du bonus:", error);
+        // Fonction pour formater le montant en FCFA
+        function formatFCFA(amount) {
+            return amount.toLocaleString('fr-FR', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }) + ' FCFA';
         }
-    }
 
-    // Fonction pour mettre à jour l'interface de l'équipe
-    function updateTeamUI(teamMembers) {
-        const teamContainer = document.getElementById('teamContainer');
+        // Fonction pour créditer le bonus au parrain
+        async function creditBonusToSponsor(sponsorId, rechargeAmount) {
+            const sponsorRef = ref(database, `users/${sponsorId}`);
+            
+            try {
+                const snapshot = await get(sponsorRef);
+                const sponsorData = snapshot.val();
+                
+                if (!sponsorData) return;
 
-        if (teamMembers.length > 0) {
-            const totalTeamBalance = teamMembers.reduce((sum, member) => sum + (member.balance || 0), 0);
-            const totalBonus = totalTeamBalance * 0.10;
-
-            document.getElementById('teamCount').textContent = teamMembers.length;
-            document.getElementById('totalBonus').textContent = formatFCFA(totalBonus);
-            document.getElementById('teamLevel').textContent = Math.floor(teamMembers.length / 5) + 5;
-
-            const currentUser = auth.currentUser;
-            if (currentUser && totalBonus > 0) {
-                // Vérifier l'état de la recharge
-                const userRef = ref(database, `users/${currentUser.uid}`);
-                get(userRef).then((snapshot) => {
-                    const userData = snapshot.val();
-                    const rechargeCount = userData.rechargeCount || 0;
-
-                    if (rechargeCount >= 1) {
-                        creditBonus(currentUser.uid, totalTeamBalance);
-                    } else {
-                        // Incrementer le compteur de recharge
-                        update(userRef, { rechargeCount: rechargeCount + 1 });
-                    }
-                }).catch((error) => {
-                    console.error("Erreur lors de la vérification des recharges:", error);
+                // Calculer le bonus (10% du montant de recharge)
+                const bonusAmount = rechargeAmount * 0.10;
+                
+                // Mettre à jour le solde principal du parrain
+                const currentBalance = sponsorData.balance || 0;
+                const newBalance = currentBalance + bonusAmount;
+                
+                await update(sponsorRef, {
+                    balance: newBalance,
+                    lastBonusDate: Date.now(),
+                    totalBonusEarned: (sponsorData.totalBonusEarned || 0) + bonusAmount
                 });
+                
+                console.log(`Bonus de ${formatFCFA(bonusAmount)} crédité au parrain ${sponsorId}`);
+            } catch (error) {
+                console.error("Erreur lors du crédit du bonus:", error);
             }
+        }
 
-            teamContainer.innerHTML = teamMembers
-                .sort((a, b) => b.createdAt - a.createdAt)
-                .map(member => `
-                    <div class="team-member">
-                        <div class="member-avatar">
-                            ${member.username.charAt(0).toUpperCase()}
-                        </div>
-                        <div class="member-info">
-                            <div class="member-name">${member.username}</div>
-                            <div class="member-date">Rejoint le ${new Date(member.createdAt).toLocaleDateString('fr-FR')}</div>
-                            <div class="member-status">Membre actif</div>
-                            <div class="member-balance">Solde: ${formatFCFA(member.balance || 0)}</div>
-                        </div>
-                    </div>
-                `).join('');
-        } else {
-            teamContainer.innerHTML = `
-                <div class="no-members">
-                    Vous n'avez pas encore de membres dans votre équipe.
-                    Partagez votre code de parrainage pour commencer à développer votre réseau !
-                </div>
-            `;
+        // Écouteur pour les recharges des filleuls
+        function listenToReferralRecharges(sponsorId) {
+            const usersRef = ref(database, 'users');
+            const referralsQuery = query(usersRef, orderByChild('referredBy'), equalTo(sponsorId));
             
-            document.getElementById('teamCount').textContent = '0';
-            document.getElementById('totalBonus').textContent = '0 FCFA';
-            document.getElementById('teamLevel').textContent = '1';
-        }
-    }
-
-    // Fonction de déconnexion
-    window.logout = function() {
-        signOut(auth).then(() => {
-            window.location.href = 'index.html';
-        }).catch((error) => {
-            console.error("Erreur de déconnexion:", error);
-        });
-    }
-
-    // Authentification de l'utilisateur
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            const userRef = ref(database, 'users/' + user.uid);
-            onValue(userRef, (snapshot) => {
-                const userData = snapshot.val();
-                if (userData && userData.referralCode) {
-                    document.getElementById('userReferralCode').textContent = userData.referralCode;
-
-                    // Génération automatique du lien de parrainage
-                    const referralLink = `${window.location.origin}/index.html?ref=${userData.referralCode}`;
-                    document.getElementById('referralLink').textContent = referralLink;
-                    document.getElementById('referralLink').href = referralLink;
-                }
-            });
-
-            const teamQuery = query(
-                ref(database, 'users'),
-                orderByChild('referredBy'),
-                equalTo(user.uid)
-            );
-
-            onValue(teamQuery, (snapshot) => {
-                const teamMembers = [];
-                if (snapshot.exists()) {
-                    snapshot.forEach((memberSnapshot) => {
-                        teamMembers.push({
-                            ...memberSnapshot.val(),
-                            uid: memberSnapshot.key
-                        });
+            onValue(referralsQuery, async (snapshot) => {
+                if (!snapshot.exists()) return;
+                
+                snapshot.forEach((childSnapshot) => {
+                    const referralId = childSnapshot.key;
+                    const rechargesRef = ref(database, `recharges/${referralId}`);
+                    
+                    onValue(rechargesRef, async (rechargeSnapshot) => {
+                        const rechargeData = rechargeSnapshot.val();
+                        if (!rechargeData) return;
+                        
+                        // Pour chaque nouvelle recharge, créditer le bonus au parrain
+                        if (rechargeData.amount && !rechargeData.bonusProcessed) {
+                            await creditBonusToSponsor(sponsorId, rechargeData.amount);
+                            
+                            // Marquer la recharge comme traitée
+                            await update(rechargesRef, {
+                                bonusProcessed: true
+                            });
+                        }
                     });
-                }
-                updateTeamUI(teamMembers);
-            }, (error) => {
-                console.error("Erreur lors de l'écoute des membres:", error);
+                });
             });
-        } else {
-            window.location.href = 'index.html';
         }
-    });
-</script>
-    <script>
+
+        // Fonction pour mettre à jour l'interface de l'équipe
+        function updateTeamUI(teamMembers) {
+            const teamContainer = document.getElementById('teamContainer');
+            const totalBonus = document.getElementById('totalBonus');
+            
+            if (teamMembers.length > 0) {
+                document.getElementById('teamCount').textContent = teamMembers.length;
+                document.getElementById('teamLevel').textContent = Math.floor(teamMembers.length / 5) + 1;
+
+                const totalBonusAmount = teamMembers.reduce((sum, member) => {
+                    return sum + (member.totalBonusGenerated || 0);
+                }, 0);
+                
+                totalBonus.textContent = formatFCFA(totalBonusAmount);
+
+                teamContainer.innerHTML = teamMembers
+                    .sort((a, b) => b.createdAt - a.createdAt)
+                    .map(member => `
+                        <div class="bg-white p-4 rounded-lg shadow">
+                            <div class="flex items-center gap-4">
+                                <div class="member-avatar">
+                                    ${member.username.charAt(0).toUpperCase()}
+                                </div>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-gray-800">${member.username}</div>
+                                    <div class="text-sm text-gray-500">Inscrit le ${new Date(member.createdAt).toLocaleDateString('fr-FR')}</div>
+                                    <div class="mt-2 flex flex-wrap gap-2">
+                                        <span class="member-status">Actif</span>
+                                        <span class="member-balance">${formatFCFA(member.balance || 0)}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+            } else {
+                teamContainer.innerHTML = `
+                    <div class="col-span-full text-center p-8 bg-gray-50 rounded-lg">
+                        <p class="text-gray-600">Vous n'avez pas encore de membres dans votre équipe.</p>
+                        <p class="text-gray-500 mt-2">Partagez votre code de parrainage pour commencer à développervotre réseau !</p>
+                    </div>
+                `;
+                
+                document.getElementById('teamCount').textContent = '0';
+                document.getElementById('totalBonus').textContent = '0 FCFA';
+                document.getElementById('teamLevel').textContent = '1';
+            }
+        }
+
+        // Initialisation de l'application
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Écouter les informations de l'utilisateur
+                const userRef = ref(database, 'users/' + user.uid);
+                onValue(userRef, (snapshot) => {
+                    const userData = snapshot.val();
+                    if (userData && userData.referralCode) {
+                        document.getElementById('userReferralCode').textContent = userData.referralCode;
+                        const referralLink = `${window.location.origin}/index.html?ref=${userData.referralCode}`;
+                        document.getElementById('referralLink').textContent = referralLink;
+                        document.getElementById('referralLink').href = referralLink;
+                    }
+                });
+
+                // Écouter les membres de l'équipe
+                const teamQuery = query(
+                    ref(database, 'users'),
+                    orderByChild('referredBy'),
+                    equalTo(user.uid)
+                );
+
+                onValue(teamQuery, (snapshot) => {
+                    const teamMembers = [];
+                    if (snapshot.exists()) {
+                        snapshot.forEach((memberSnapshot) => {
+                            teamMembers.push({
+                                ...memberSnapshot.val(),
+                                uid: memberSnapshot.key
+                            });
+                        });
+                    }
+                    updateTeamUI(teamMembers);
+                });
+
+                // Démarrer l'écoute des recharges des filleuls
+                listenToReferralRecharges(user.uid);
+
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+
         // Fonction de déconnexion
         window.logout = function() {
-            // Implémentation de la déconnexion
+            signOut(auth).then(() => {
+                window.location.href = 'index.html';
+            }).catch((error) => {
+                console.error("Erreur de déconnexion:", error);
+            });
         };
 
         // Fonction pour copier du texte
-        function copyText(elementId) {
+        window.copyText = function(elementId) {
             const textToCopy = document.getElementById(elementId).textContent;
             navigator.clipboard.writeText(textToCopy)
                 .then(() => {
-                    // Afficher le message de succès
                     const successMessage = document.getElementById('successMessage');
                     successMessage.classList.remove('hidden');
                     setTimeout(() => {
@@ -324,7 +338,44 @@
                 .catch((error) => {
                     console.error('Erreur lors de la copie :', error);
                 });
+        };
+
+        // Fonction pour surveiller les recharges et mettre à jour les bonus
+        function setupRechargeListener(userId) {
+            const rechargesRef = ref(database, `recharges/${userId}`);
+            
+            onValue(rechargesRef, async (snapshot) => {
+                const rechargeData = snapshot.val();
+                if (!rechargeData) return;
+
+                // Vérifier si l'utilisateur est un filleul
+                const userRef = ref(database, `users/${userId}`);
+                const userSnapshot = await get(userRef);
+                const userData = userSnapshot.val();
+
+                if (userData && userData.referredBy) {
+                    // Pour chaque nouvelle recharge non traitée
+                    for (const [rechargeId, recharge] of Object.entries(rechargeData)) {
+                        if (recharge.amount && !recharge.bonusProcessed) {
+                            // Créditer le bonus au parrain
+                            await creditBonusToSponsor(userData.referredBy, recharge.amount);
+                            
+                            // Marquer la recharge comme traitée
+                            await update(ref(database, `recharges/${userId}/${rechargeId}`), {
+                                bonusProcessed: true
+                            });
+                        }
+                    }
+                }
+            });
         }
+
+        // Mettre en place l'écouteur de recharges pour l'utilisateur connecté
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setupRechargeListener(user.uid);
+            }
+        });
     </script>
 </body>
 </html>
