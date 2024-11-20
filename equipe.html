@@ -165,63 +165,31 @@
         }) + ' FCFA';
     }
 
-    // Nouvelle fonction pour traiter une recharge
-    async function processRecharge(userId, rechargeAmount) {
+    // Fonction pour créditer un bonus de 10 % en FCFA
+    async function creditBonus(userId, totalTeamBalance) {
         try {
-            // Récupérer les informations de l'utilisateur
             const userRef = ref(database, `users/${userId}`);
-            const userSnapshot = await get(userRef);
-            const userData = userSnapshot.val();
-
-            if (!userData) {
-                throw new Error("Utilisateur non trouvé");
+            const snapshot = await get(userRef);
+            const userData = snapshot.val();
+            
+            if (userData.bonusCredited) {
+                console.log(`Le bonus de 10 % a déjà été crédité pour l'utilisateur ${userId}.`);
+                return;
             }
 
-            // Vérifier si l'utilisateur a un parrain
-            if (userData.referredBy) {
-                const parrainRef = ref(database, `users/${userData.referredBy}`);
-                const parrainSnapshot = await get(parrainRef);
-                const parrainData = parrainSnapshot.val();
+            const currentBalance = userData.balance || 0;
+            const bonusAmount = totalTeamBalance * 0.10;
+            const newBalance = currentBalance + bonusAmount;
 
-                if (parrainData) {
-                    // Calculer le bonus de 10%
-                    const bonusAmount = rechargeAmount * 0.10;
-
-                    // Mettre à jour le solde du parrain et enregistrer l'historique
-                    const newParrainBalance = (parrainData.balance || 0) + bonusAmount;
-                    const rechargeHistory = {
-                        timestamp: Date.now(),
-                        amount: rechargeAmount,
-                        bonus: bonusAmount,
-                        filleulId: userId
-                    };
-
-                    // Mise à jour des données du parrain
-                    await update(parrainRef, {
-                        balance: newParrainBalance,
-                        [`rechargeHistory/${Date.now()}`]: rechargeHistory,
-                        totalBonusEarned: (parrainData.totalBonusEarned || 0) + bonusAmount
-                    });
-
-                    console.log(`Bonus de ${formatFCFA(bonusAmount)} crédité au parrain ${userData.referredBy}`);
-                }
-            }
-
-            // Mettre à jour les données du filleul
-            const newUserBalance = (userData.balance || 0) + rechargeAmount;
             await update(userRef, {
-                balance: newUserBalance,
-                lastRechargeDate: Date.now(),
-                rechargeCount: (userData.rechargeCount || 0) + 1,
-                [`rechargeHistory/${Date.now()}`]: {
-                    amount: rechargeAmount,
-                    timestamp: Date.now()
-                }
+                balance: newBalance,
+                bonusCredited: true,
+                lastBonusUpdate: Date.now()
             });
 
+            console.log(`Bonus de ${formatFCFA(bonusAmount)} crédité pour ${userId}`);
         } catch (error) {
-            console.error("Erreur lors du traitement de la recharge:", error);
-            throw error;
+            console.error("Erreur lors du crédit du bonus:", error);
         }
     }
 
@@ -231,10 +199,30 @@
 
         if (teamMembers.length > 0) {
             const totalTeamBalance = teamMembers.reduce((sum, member) => sum + (member.balance || 0), 0);
-            
+            const totalBonus = totalTeamBalance * 0.10;
+
             document.getElementById('teamCount').textContent = teamMembers.length;
-            document.getElementById('totalBonus').textContent = formatFCFA(totalTeamBalance * 0.10);
+            document.getElementById('totalBonus').textContent = formatFCFA(totalBonus);
             document.getElementById('teamLevel').textContent = Math.floor(teamMembers.length / 5) + 5;
+
+            const currentUser = auth.currentUser;
+            if (currentUser && totalBonus > 0) {
+                // Vérifier l'état de la recharge
+                const userRef = ref(database, `users/${currentUser.uid}`);
+                get(userRef).then((snapshot) => {
+                    const userData = snapshot.val();
+                    const rechargeCount = userData.rechargeCount || 0;
+
+                    if (rechargeCount >= 1) {
+                        creditBonus(currentUser.uid, totalTeamBalance);
+                    } else {
+                        // Incrementer le compteur de recharge
+                        update(userRef, { rechargeCount: rechargeCount + 1 });
+                    }
+                }).catch((error) => {
+                    console.error("Erreur lors de la vérification des recharges:", error);
+                });
+            }
 
             teamContainer.innerHTML = teamMembers
                 .sort((a, b) => b.createdAt - a.createdAt)
@@ -248,7 +236,6 @@
                             <div class="member-date">Rejoint le ${new Date(member.createdAt).toLocaleDateString('fr-FR')}</div>
                             <div class="member-status">Membre actif</div>
                             <div class="member-balance">Solde: ${formatFCFA(member.balance || 0)}</div>
-                            <div class="member-recharges">Recharges: ${member.rechargeCount || 0}</div>
                         </div>
                     </div>
                 `).join('');
@@ -275,19 +262,6 @@
         });
     }
 
-    // Exemple de fonction pour simuler une recharge (à des fins de test)
-    window.simulateRecharge = async function(amount) {
-        const user = auth.currentUser;
-        if (user) {
-            try {
-                await processRecharge(user.uid, amount);
-                alert('Recharge effectuée avec succès !');
-            } catch (error) {
-                alert('Erreur lors de la recharge : ' + error.message);
-            }
-        }
-    }
-
     // Authentification de l'utilisateur
     onAuthStateChanged(auth, (user) => {
         if (user) {
@@ -297,13 +271,13 @@
                 if (userData && userData.referralCode) {
                     document.getElementById('userReferralCode').textContent = userData.referralCode;
 
+                    // Génération automatique du lien de parrainage
                     const referralLink = `${window.location.origin}/index.html?ref=${userData.referralCode}`;
                     document.getElementById('referralLink').textContent = referralLink;
                     document.getElementById('referralLink').href = referralLink;
                 }
             });
 
-            // Écouter les membres de l'équipe
             const teamQuery = query(
                 ref(database, 'users'),
                 orderByChild('referredBy'),
@@ -329,7 +303,7 @@
         }
     });
 </script>
-<script>
+    <script>
         // Fonction de déconnexion
         window.logout = function() {
             // Implémentation de la déconnexion
